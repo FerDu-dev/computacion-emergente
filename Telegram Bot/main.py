@@ -27,10 +27,6 @@ def send_welcome(message):
 def send_help(message):
     bot.reply_to(message, "Estos son los comandos que puedes usar: \n /start - Inicia el BOT \n /help - Muestra esta ayuda \n /card - Busca una carta por su nombre \n /rule - Busca una regla por su nombre \n /random - Muestra una carta o regla aleatoria")
 
-# @bot.message_handler(func=lambda m: True)
-# def send_random_card(message):
-#     bot.reply_to(message, message.text)
-
 # Funcion random para retornar dos botones para seleccionar carta o regla
 @bot.message_handler(commands=['random'])
 def send_options(message):
@@ -59,12 +55,17 @@ def callback_query(call):
         random_rule = random.choice(rules)
         bot.send_message(call.message.chat.id, f"{random_rule[0]}: {random_rule[1]}")
 
+# Buscar carta por nombre
+@bot.message_handler(commands=['card'])
+def search_card(message):
+    card_name = message.text.split()[1:]
+    card_name = ' '.join(card_name).lower()
 
-# Aqui queria buscar una carta por su nombre pero aun no lo hago
-# @bot.message_handler(commands=['card'])
-# def search_card(message):
-#     img_url = 'https://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=573046&type=card'
-#     bot.send_photo(chat_id=message.chat.id, photo=img_url, caption="Carta encontrada")
+    for card in cards:
+        if card[0].lower() == card_name:
+            bot.send_photo(chat_id=message.chat.id, photo=card[1], caption=f"Carta encontrada: {card[0]}")
+            return   
+    bot.send_message(chat_id=message.chat.id, text="Carta no encontrada, verifica que escribiste bien el nombre.")
 
 
 if __name__ == "__main__":
