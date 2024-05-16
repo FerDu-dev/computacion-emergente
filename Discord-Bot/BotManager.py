@@ -29,8 +29,8 @@ async def help(ctx):
                           description="Lista de comandos disponibles. Cuando interactues por privado no es necesario usar los comandos, puedes tener una conversacion normal.",
                           color=discord.Colour.blue())
   MyEmbed.set_thumbnail(url="https://i.redd.it/llkxvsttlptb1.jpg")
-  MyEmbed.add_field(name="!query", value="Preguntale al bot de Gemini lo que desees. Por favor, recuerda usar signo de pregunta (Este -> ?).", inline=False)
-  MyEmbed.add_field(name="!pm", value="Envia un mensaje privado a Gemini.", inline=False)
+  MyEmbed.add_field(name="!ask", value="Preguntale al bot de Gemini lo que desees.", inline=False)
+  MyEmbed.add_field(name="!dm", value="Envia un mensaje privado a Gemini.", inline=False)
   await ctx.send(embed=MyEmbed)
 
 @bot.command()

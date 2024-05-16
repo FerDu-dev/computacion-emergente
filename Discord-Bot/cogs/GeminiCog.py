@@ -18,26 +18,32 @@ class GeminiAgent(commands.Cog):
     try:
       if msg.content == 'ping gemini-agent':
         await msg.channel.send('El Agente Gemini esta listo para responder tus preguntas...')
+      elif 'Direct Message' in str(msg.channel) and not msg.author.bot:
+        response = self.gemini_generate_content(msg.content)
+        dmchannel = await msg.author.create_dm()
+        await dmchannel.send(response.text)
     except Exception as e:
       return PLEASE_TRY_AGAIN_ERROR_MESSAGE + str(e)
 
   @commands.command()
-  async def query(self, ctx, question):
+  async def ask(self, ctx, question):
     try:
       response = self.gemini_generate_content(question)
-      await ctx.send(response)
+      await ctx.send(response.text)
     except Exception as e:
-      return PLEASE_TRY_AGAIN_ERROR_MESSAGE + str(e)
+      await ctx.send(PLEASE_TRY_AGAIN_ERROR_MESSAGE + str(e))
   
   @commands.command()
-  async def pm(self, ctx):
+  async def dm(self, ctx):
     # Revisa si el usuario puede recibir mensajes de miembros del servidor
     if not ctx.author.dm_channel:
-      await ctx.send("No es posible enviarte mensajes privados :(. Por favor habilita los mensajes de miembros del servidor para interactuar por privado.")
-      return
-    dmchannel = await ctx.author.create_dm()
-    await dmchannel.send('Hola! Soy Gemini, el asistente virtual de Google. ¿En qué puedo ayudarte?')
-  
+      try:
+        dmchannel = await ctx.author.create_dm()
+        await dmchannel.send('Hola! Soy Gemini, el asistente virtual de Google. ¿En qué puedo ayudarte?')
+      except:
+        await ctx.send("No es posible enviarte mensajes privados :(. Por favor habilita los mensajes de miembros del servidor para interactuar por privado.")
+        return
+    
   def gemini_generate_content(self, content):
     try:
       return self.model.generate_content(content)
